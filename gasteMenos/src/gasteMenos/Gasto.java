@@ -5,7 +5,7 @@ public class Gasto {
 	private int id;
 	private String nome, categoria;
 	private float preco;
-	
+
 	public Gasto (String nome, String categoria, float preco) {
 		this.setNome(nome);
 		this.setCategoria(categoria);

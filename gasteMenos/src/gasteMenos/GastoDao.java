@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- 
+
 CREATE DATABASE gastemenos;
 
 USE gastemenos;
@@ -20,8 +20,8 @@ CREATE TABLE gastos (
     categoria VARCHAR(255),
     preco FLOAT
 );
- 
- */
+
+*/
 
 public class GastoDao {
 
@@ -57,14 +57,72 @@ public class GastoDao {
 		}
 	}
 
+	public void alterar (String nome, String categoria, float preco, int id) {
+		try {
+			PreparedStatement ps = connection.prepareStatement("UPDATE gastos SET nome = ?, categoria = ?, preco = ? WHERE id = ?");
+
+			ps.setString(1, nome);
+			ps.setString(2, categoria);
+			ps.setFloat(3, preco);
+			ps.setInt(4, id);
+
+			ps.execute();
+			ps.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public void remover (int id) {
 		try {
 			PreparedStatement ps = connection.prepareStatement("DELETE FROM gastos WHERE id = ?");
-
 			ps.setInt(1, id);
 
 			ps.execute();
 			ps.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public List<String> listarCategorias () {
+		try {
+			List<String> categorias = new ArrayList<String>();
+
+			PreparedStatement ps = this.connection.prepareStatement("SELECT DISTINCT categoria FROM gastos");
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				String categoria = rs.getString("categoria");
+				categorias.add(categoria);
+			}
+
+			rs.close();
+			ps.close();
+
+			return categorias;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public float buscarPrecoPorCategoria (String categoria) {
+		try {
+			float total = 0;
+
+			PreparedStatement ps = this.connection.prepareStatement("SELECT preco FROM gastos WHERE categoria = ?");
+			ps.setString(1, categoria);
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				total += rs.getFloat("preco");
+			}
+
+			rs.close();
+			ps.close();
+
+			return total;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
