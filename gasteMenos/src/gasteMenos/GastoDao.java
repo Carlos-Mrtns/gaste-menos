@@ -8,25 +8,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ 
+CREATE DATABASE gastemenos;
+
+USE gastemenos;
+
+CREATE TABLE gastos (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255),
+    categoria VARCHAR(255),
+    preco FLOAT
+);
+ 
+ */
+
 public class GastoDao {
 
 	private Connection connection;
 	final String DRIVER = "com.mysql.jdbc.Driver";
 
-	public GastoDao() {
+	public GastoDao () {
 		this.connection = getConnection();
 	}
 
-	public Connection getConnection() {
+	public Connection getConnection () {
 		try {
 			Class.forName(DRIVER);
-			return DriverManager.getConnection("jdbc:mysql://localhost:3306/financas", "root", "");
+			return DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gastemenos", "root", "");
 		} catch (SQLException | ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void adicionar(Gasto gasto) {
+	public void adicionar (Gasto gasto) {
 		try {
 			PreparedStatement ps = connection.prepareStatement("INSERT INTO gastos VALUES (?, ?, ?, ?)");
 
@@ -42,7 +57,7 @@ public class GastoDao {
 		}
 	}
 
-	public void remover(int id) {
+	public void remover (int id) {
 		try {
 			PreparedStatement ps = connection.prepareStatement("DELETE FROM gastos WHERE id = ?");
 
@@ -55,7 +70,7 @@ public class GastoDao {
 		}
 	}
 
-	public List<Gasto> getLista() {
+	public List<Gasto> getLista () {
 		try {
 			List<Gasto> gastos = new ArrayList<Gasto>();
 
@@ -63,13 +78,8 @@ public class GastoDao {
 			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
-				Gasto gasto = new Gasto();
-
+				Gasto gasto = new Gasto(rs.getString("nome"), rs.getString("categoria"), rs.getFloat("preco"));
 				gasto.setId(rs.getInt("id"));
-				gasto.setNome(rs.getString("nome"));
-				gasto.setCategoria(rs.getString("categoria"));
-				gasto.setPreco(rs.getFloat("preco"));
-
 				gastos.add(gasto);
 			}
 
