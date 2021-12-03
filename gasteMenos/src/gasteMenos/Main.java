@@ -34,6 +34,11 @@ public class Main {
 	}
 
 	public static void alterarGasto () {
+		if (gastoDao.getLista().size() == 0) {
+			JOptionPane.showMessageDialog(null, "Sem gastos cadastrados!");
+			return;
+		}
+
 		int id = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do gasto que deseja alterar:"));
 
 		for (int i = 0; i < gastoDao.getLista().size(); i++) {
@@ -46,15 +51,20 @@ public class Main {
 				gastoDao.alterar(nome, categoria, preco, id);
 
 				JOptionPane.showMessageDialog(null, "Gasto atualizado com sucesso!");
-			}
-			else{
-				JOptionPane.showMessageDialog(null, "Id não encontrado");
 				return;
 			}
 		}
+
+		JOptionPane.showMessageDialog(null, "Id não encontrado");
+		return;
 	}
 
 	public static void removerGasto () {
+		if (gastoDao.getLista().size() == 0) {
+			JOptionPane.showMessageDialog(null, "Sem gastos cadastrados!");
+			return;
+		}
+
 		int id = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID:"));
 
 		for (int i = 0; i < gastoDao.getLista().size(); i++) {
@@ -63,11 +73,12 @@ public class Main {
 				gastoDao.remover(id);
 
 				JOptionPane.showMessageDialog(null, "Gasto removido com sucesso!");
-			}else {
-				JOptionPane.showMessageDialog(null, "Id não encontrado");
 				return;
 			}
 		}
+
+		JOptionPane.showMessageDialog(null, "Id não encontrado");
+		return;
 	}
 
 	public static void removerTudo () {
@@ -107,13 +118,15 @@ public class Main {
 			return;
 		}
 
-		int total = 0;
+		float total = 0;
 
 		for (int i = 0; i < gastoDao.getLista().size(); i++) {
 			total += gastoDao.getLista().get(i).getPreco();
 		} 
 
-		JOptionPane.showMessageDialog(null,  String.format("Total gasto: R$ %.2f\n ", total));
+		String mensagem = String.format("Total gasto: R$ %.2f\n ", total);
+
+		JOptionPane.showMessageDialog(null, mensagem);
 	}
 
 	public static void gastoPorCategoria () {
